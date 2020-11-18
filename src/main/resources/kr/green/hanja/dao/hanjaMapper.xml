@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.green.hanja.dao.HanjaDAO">
+	<!-- 전체 개수얻기 -->
+	<select id="selectCount" resultType="int">
+		select count(*) from hanja
+	</select>
+	<!-- 1개 얻기 -->
+	<!-- idx로 찾기 -->
+	<select id="selectByIdx" parameterType="int" resultType="HanjaVO">
+		select * from hanja where idx=#{idx}
+	</select>
+	<!-- userid로 찾기 -->
+	<select id="selectByUserid" parameterType="string" resultType="HanjaVO">
+		select * from hanja where userid=#{userid}
+	</select>
+	<!-- id 찾기 -->
+	<select id="selectUserid" parameterType="HanjaVO" resultType="string">
+		select userid from hanja where name=#{name} and hp=#{hp}
+	</select>
+	
+	<!-- id중복확인 : 아이디를 받아 아이디의 개수를 리턴 -->
+	<select id="selectUseridCount" parameterType="string" resultType="int">
+		select count(*) from hanja where userid=#{userid}
+	</select>	
+	
+	<!-- 1페이지 얻기 -->
+	<select id="selectList" parameterType="hashmap" resultType="HanjaVO">
+		select
+			Q.*
+		from
+			(select 
+				rownum rnum, R.*
+			from
+				(select * from hanja order by userid) R
+			where
+				<![CDATA[
+				rownum<=#{endNo}
+				]]>
+			) Q
+		where
+			<![CDATA[
+			rnum>=#{startNo}
+			]]>
+	</select>
+	<!-- 저장 -->
+	<insert id="insert" parameterType="HanjaVO">
+		insert into hanja
+		(idx, userid, password, name, nickname, hp, birth, gender,zipcode,addr1,addr2)
+		values
+		(hanja_role_idx_seq.nextval, #{userid}, #{password}, #{name}, #{nickname}, #{hp}, #{birth}, #{gender},#{zipcode}, #{addr1}, #{addr2})
+	</insert>
+	<!-- 수정 -->
+	<!-- 정보 수정 -->
+	<update id="update" parameterType="HanjaVO">
+		update hanja set 
+			name=#{name}, nickname=#{nickname}, hp=#{hp}, 
+			zipcode=#{zipcode}, addr1=#{addr1}, addr2=#{addr2}
+		where
+			idx=#{idx}
+	</update>
+	<!-- 인증 수정 -->
+	<update id="updateUse" parameterType="hashmap">
+		update hanja set use=#{use} where idx=#{idx}
+	</update>
+	<!-- 레벨 수정 -->
+	<update id="updateLevel" parameterType="hashmap">
+		update hanja set lvl=#{lvl} where idx=#{idx}
+	</update>
+	<!-- 비번 수정 -->
+	<update id="updatePassword" parameterType="hashmap">
+		update hanja set password=#{password} where idx=#{idx}
+	</update>
+	<!-- 완전 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete from hanja where idx=#{idx}
+	</delete>
+	
+</mapper>

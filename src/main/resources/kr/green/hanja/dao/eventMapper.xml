@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.green.hanja.dao.EventDAO">
+	<select id="selectEvent" resultType="EventVO">
+		select *  FROM fullCalendar
+	</select>
+	
+	<insert id="insert" parameterType="EventVO">
+		INSERT INTO fullCalendar
+			(title,description,START,END,TYPE, username,backgroundColor,textColor,allDay)
+		VALUES
+			(#{title},#{description},#{start},#{end},#{type},#{username},#{backgroundColor},#{textColor},#{allDay})
+	</insert>
+	
+	<update id="update"  parameterType="EventVO">
+		update fullCalendar 
+		set
+			title = #{title},
+			description = #{description},
+			start = #{start},
+			end = #{end},
+			type = #{type},
+			username = #{username},
+			backgroundColor = #{backgroundColor},
+			allDay = #{allDay},
+			textColor = #{textColor}
+		where
+			id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from fullCalendar where id=#{id}
+	</delete>
+</mapper>
